@@ -27,6 +27,7 @@ class MovieController extends Controller
         $movies = array_merge($movies_1, $movies_2, $movies_3, $movies_4);
 
         foreach ($movies as $movie) {
+            $image_path = $movie['backdrop_path'] ? "https://image.tmdb.org/t/p/@size" . $movie['backdrop_path'] : null;
             Movie::firstOrCreate(
                 ['api_id' => $movie['id']],
                 [
@@ -34,7 +35,7 @@ class MovieController extends Controller
                     'title' => $movie['title'],
                     'rating' => $movie['vote_average'],
                     'release_date' => $movie['release_date'],
-                    'image_path' => "https://image.tmdb.org/t/p/@size" . $movie['backdrop_path'],
+                    'image_path' => $image_path,
                 ]);
         }
 
