@@ -17,9 +17,11 @@ class CreateMoviesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('api_id');
             $table->string('title');
+            $table->longText('description');
             $table->string('rating');
-            $table->timestamp('release_date');
-            $table->string('image_path')->nullable();
+            $table->timestamp('release_date')->nullable();
+            $table->string('backdrop_path')->nullable();
+            $table->string('poster_path')->nullable();
             $table->timestamps();
         });
     }

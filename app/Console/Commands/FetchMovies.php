@@ -33,39 +33,27 @@ class FetchMovies extends Command
         parent::__construct();
     }
 
-    private function fetchMovies($movies)
+    private function fetchData($datas)
     {
-        foreach ($movies as $movie) {
-            $image_path = $movie['backdrop_path'] ? "https://image.tmdb.org/t/p/@size" . $movie['backdrop_path'] : null;
-            Movie::firstOrCreate(
-                ['api_id' => $movie['id']],
+        foreach ($datas as $data) {
+            $backdrop_path = $data['backdrop_path'] ? "https://image.tmdb.org/t/p/@size" . $data['backdrop_path'] : null;
+            $poster_path = $data['poster_path'] ? "https://image.tmdb.org/t/p/@size" . $data['poster_path'] : null;
+            $type = $this->argument('type');
+            $title = $type === 'movie' ? 'title' : 'name';
+            $release_date = \array_key_exists('release_date', $data) ? $data['release_date'] : null;
+            $model = $type === 'movie' ? (Movie::class) : (Serie::class);
+            $model::firstOrCreate(
+                ['api_id' => $data['id']],
                 [
-                    'api_id' => $movie['id'],
-                    'title' => $movie['title'],
-                    'rating' => $movie['vote_average'],
-                    'release_date' => $movie['release_date'],
-                    'image_path' => $image_path,
+                    'api_id' => $data['id'],
+                    'title' => $data[$title],
+                    'description' => $data['overview'],
+                    'rating' => $data['vote_average'],
+                    'release_date' => $release_date,
+                    'backdrop_path' => $backdrop_path,
+                    'poster_path' => $poster_path,
                 ]);
         }
-    }
-
-    private function fetchSeries($series)
-    {
-
-        foreach ($series as $serie) {
-            $image_path = $serie['backdrop_path'] ? "https://image.tmdb.org/t/p/@size" . $serie['backdrop_path'] : null;
-
-            Serie::firstOrCreate(
-                ['api_id' => $serie['id']],
-                [
-                    'api_id' => $serie['id'],
-                    'title' => $serie['name'],
-                    'rating' => $serie['vote_average'],
-                    // 'release_date' => $serie['last_air_date'],
-                    'image_path' => "https://image.tmdb.org/t/p/@size" . $serie['backdrop_path'],
-                ]);
-        }
-
     }
 
     /**
@@ -82,7 +70,7 @@ class FetchMovies extends Command
         while ($page < 5) {
             $response = $client->request('GET', $url . $page);
             $results = json_decode($response->getBody(), true)['results'];
-            $type === 'movie' ? $this->fetchMovies($results) : $this->fetchSeries($results);
+            $this->fetchData($results);
             $page += 1;
         }
 

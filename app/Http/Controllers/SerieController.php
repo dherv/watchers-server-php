@@ -14,10 +14,8 @@ class SerieController extends Controller
      */
     public function index()
     {
-
         $responseMovies = Serie::all();
         return response()->json($responseMovies);
-
     }
 
     /**
@@ -49,7 +47,7 @@ class SerieController extends Controller
      */
     public function show(Serie $serie)
     {
-        //
+        return response()->json($serie);
     }
 
     /**

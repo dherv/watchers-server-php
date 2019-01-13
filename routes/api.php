@@ -15,6 +15,7 @@ Route::get('movies', 'MovieController@index');
 Route::get('movies/{movie}', 'MovieController@show');
 
 Route::get('series', 'SerieController@index');
+Route::get('series/{serie}', 'SerieController@show');
 
 Route::get('watchlist', 'WatchlistController@index');
 Route::post('watchlist/{movie}', 'WatchlistController@store');

@@ -10,7 +10,10 @@ class Movie extends Model
         'api_id',
         'rating',
         'release_date',
-        'image_path'];
+        'description',
+        'poster_path',
+        'backdrop_path',
+    ];
 
     public function users()
     {
