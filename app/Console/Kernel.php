@@ -24,9 +24,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('movies:fetch movie')->twiceDaily(1, 13)->timezone('America/New_York')->withoutOverlapping();
-        $schedule->command('movies:fetch serie')->twiceDaily(1, 13)->timezone('America/New_York')->withoutOverlapping();
-        $schedule->command('serie:fetch')->twiceDaily(1, 13)->timezone('America/New_York')->withoutOverlapping()->runInBackground();
+        $schedule->command('movies:fetch movie')->everyMinute()->timezone('America/New_York')->withoutOverlapping();
+        $schedule->command('movies:fetch serie')->everyMinute()->timezone('America/New_York')->withoutOverlapping();
+        $schedule->command('serie:fetch')->everyMinute()->timezone('America/New_York')->withoutOverlapping()->runInBackground();
 
     }
 

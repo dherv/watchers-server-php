@@ -50,7 +50,8 @@ class FetchSerieDetails extends Command
             ]);
             $serie = json_decode($serie->getBody(), true);
             $update = Serie::find($id);
-            $update->release_date = $serie['last_air_date'];
+            $update->release_date = $serie['next_episode_to_air']['air_date'];
+
             $update->save();
 
         }
