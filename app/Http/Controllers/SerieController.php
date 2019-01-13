@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Serie;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class SerieController extends Controller
@@ -15,25 +14,6 @@ class SerieController extends Controller
      */
     public function index()
     {
-        $client = new Client();
-        // TODO: the cron job should be separate in two because tmdb seems to limit the number of request
-        // 1. every day or week 2.one number 1 start every 5 min call each page with the algorithm below
-        $response = $client->request('GET', env('TMDB_SERIES'));
-        $series = json_decode($response->getBody(), true)['results'];
-        foreach ($series as $serie) {
-            $key = env('TMDB_KEY');
-            $serie = $client->request('GET', "https://api.themoviedb.org/3/tv/{$serie['id']}?api_key={$key}&language=en-US");
-            $serie = json_decode($serie->getBody(), true);
-            Serie::firstOrCreate(
-                ['api_id' => $serie['id']],
-                [
-                    'api_id' => $serie['id'],
-                    'title' => $serie['name'],
-                    'rating' => $serie['vote_average'],
-                    'release_date' => $serie['last_air_date'],
-                    'image_path' => "https://image.tmdb.org/t/p/@size" . $serie['backdrop_path'],
-                ]);
-        }
 
         $responseMovies = Serie::all();
         return response()->json($responseMovies);

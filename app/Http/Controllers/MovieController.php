@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Movie;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class MovieController extends Controller
@@ -15,30 +14,6 @@ class MovieController extends Controller
      */
     public function index()
     {
-        $client = new Client();
-        $response_1 = $client->request('GET', env('TMDB_URL_1'));
-        $response_2 = $client->request('GET', env('TMDB_URL_2'));
-        $response_3 = $client->request('GET', env('TMDB_URL_3'));
-        $response_4 = $client->request('GET', env('TMDB_URL_4'));
-        $movies_1 = json_decode($response_1->getBody(), true)['results'];
-        $movies_2 = json_decode($response_2->getBody(), true)['results'];
-        $movies_3 = json_decode($response_3->getBody(), true)['results'];
-        $movies_4 = json_decode($response_4->getBody(), true)['results'];
-        $movies = array_merge($movies_1, $movies_2, $movies_3, $movies_4);
-
-        foreach ($movies as $movie) {
-            $image_path = $movie['backdrop_path'] ? "https://image.tmdb.org/t/p/@size" . $movie['backdrop_path'] : null;
-            Movie::firstOrCreate(
-                ['api_id' => $movie['id']],
-                [
-                    'api_id' => $movie['id'],
-                    'title' => $movie['title'],
-                    'rating' => $movie['vote_average'],
-                    'release_date' => $movie['release_date'],
-                    'image_path' => $image_path,
-                ]);
-        }
-
         $responseMovies = Movie::all();
         return response()->json($responseMovies);
     }

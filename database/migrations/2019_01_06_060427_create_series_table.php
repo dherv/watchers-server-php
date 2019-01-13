@@ -18,8 +18,8 @@ class CreateSeriesTable extends Migration
             $table->unsignedInteger('api_id');
             $table->string('title');
             $table->string('rating');
-            $table->timestamp('release_date');
-            $table->string('image_path');
+            $table->timestamp('release_date')->nullable();
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }
