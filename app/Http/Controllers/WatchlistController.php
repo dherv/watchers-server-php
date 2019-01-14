@@ -17,12 +17,16 @@ class WatchlistController extends Controller
     public function index()
     {
         // TODO: try hasManyThrough or some eloquent method on User to get the movies straight away
-        $watchlist = User::find(2)->watchlist;
-        $watchlist = $watchlist->map(function ($item) {
-            return $item->movie;
-        });
+        if (auth()->check()) {
+            $user = auth()->user();
+            $watchlist = $user->watchlist;
+            $watchlist = $watchlist->map(function ($item) {
+                return $item->movie;
+            });
 
-        return response()->json($watchlist);
+            return response()->json($watchlist);
+        }
+
     }
 
     /**

@@ -20,6 +20,5 @@ Route::get('series/{serie}', 'SerieController@show');
 Route::get('watchlist', 'WatchlistController@index');
 Route::post('watchlist/{movie}', 'WatchlistController@store');
 
-Route::post('registration', 'RegistrationController@store');
-Route::post('login', 'SessionController@store');
-Route::get('logout', 'SessionController@destroy');
+Route::post('register', 'AuthController@register');
+Route::post('login', 'AuthController@login');
