@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class WatchlistController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -30,16 +34,6 @@ class WatchlistController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -48,11 +42,13 @@ class WatchlistController extends Controller
     public function store(Request $request, Movie $movie)
     {
 //TODO: need to build an authentication process with passport as the api cant store the current logged user
-        Watchlist::firstOrCreate(['user_id' => 1, 'movie_id' => $movie->id], [
-            'user_id' => 1,
-            'movie_id' => $movie->id,
-        ]);
-
+        if (auth()->check()) {
+            Watchlist::firstOrCreate(['user_id' => auth()->user()->id, 'movie_id' => $movie->id], [
+                'user_id' => auth()->user()->id,
+                'movie_id' => $movie->id,
+            ]);
+            return response()->json(['message' => "movie added to your watchlist"], 204);
+        }
     }
 
     /**
@@ -62,17 +58,6 @@ class WatchlistController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Watchlist $watchlist)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Watchlist  $watchlist
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Watchlist $watchlist)
     {
         //
     }
