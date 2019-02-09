@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Movie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class MovieController extends Controller
 {
@@ -14,8 +15,13 @@ class MovieController extends Controller
      */
     public function index()
     {
-        $responseMovies = Movie::all();
-        return response()->json($responseMovies);
+        $fromDate = new Carbon('last month');
+        $toDate = new Carbon('now');
+        $data =
+        Movie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()])
+            ->orderBy('rating', 'desc')
+            ->paginate(23);
+        return response()->json(compact('data'));
     }
 
     /**

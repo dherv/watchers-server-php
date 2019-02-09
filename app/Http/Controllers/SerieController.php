@@ -14,8 +14,13 @@ class SerieController extends Controller
      */
     public function index()
     {
-        $responseMovies = Serie::all();
-        return response()->json($responseMovies);
+        $fromDate = new Carbon('last month');
+        $toDate = new Carbon('now');
+        $data =
+        Serie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()])
+            ->orderBy('rating', 'asc')
+            ->paginate(23);
+        return response()->json(compact('data'));
     }
 
     /**
