@@ -16,11 +16,12 @@ class MovieController extends Controller
     public function index()
     {
         $fromDate = new Carbon('last month');
-        $toDate = new Carbon('now');
+        $toDate = new Carbon('next month');
         $data =
         Movie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()])
-            ->orderBy('rating', 'desc')
+            ->orderBy('release_date', 'asc')
             ->paginate(23);
+
         return response()->json(compact('data'));
     }
 
