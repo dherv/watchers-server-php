@@ -15,11 +15,13 @@ class SerieController extends Controller
      */
     public function index()
     {
+        $sort = request()->query('sort');
+        $order = request()->query('order');
         $fromDate = new Carbon('last month');
         $toDate = new Carbon('next month');
         $data =
-        Serie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()])
-            ->orderBy('release_date', 'asc')
+            Serie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()])
+            ->orderBy($sort, $order)
             ->paginate(23);
         return response()->json(compact('data'));
     }
