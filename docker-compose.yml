@@ -1,0 +1,77 @@
+version: "3.7"
+services:
+  # The Application
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+      target: stage
+    working_dir: /app
+    depends_on:
+      - elasticsearch
+      - kibana
+      - database
+    volumes:
+      - ./:/app:cached
+    environment:
+      - "DB_PORT=3306"
+      - "DB_HOST=database"
+      - "DB_PASSWORD=mypassword"
+      - "SEARCH_ENABLED=true"
+      - "SEARCH_HOSTS=elasticsearch:9200"
+  # The Web Server
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    working_dir: /app
+    depends_on:
+      - app
+    ports:
+      - 8000:80
+  # The Database
+  database:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - dbdata:/var/lib/mysql:cached
+    environment:
+      - "MYSQL_DATABASE=watchers"
+      - "MYSQL_USER=root"
+      - "MYSQL_ROOT_PASSWORD=mypassword"
+    ports:
+      - "33061:3306"
+  # Kibana
+  kibana:
+    image: kibana:6.7.0
+    expose:
+      - "5601"
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+  # ElasticSearch
+  elasticsearch:
+    image: elasticsearch:6.7.0
+    volumes:
+      - ./elasticsearch/data:/usr/share/elasticsearch/data:cached
+      - ./elasticsearch/logs:/usr/share/elasticsearch/logs:cached
+    expose:
+      - "9200"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+  redis:
+    image: redis:latest
+    restart: always
+    volumes:
+      - ./redis:/data
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+volumes:
+  dbdata:
+  elastic:
