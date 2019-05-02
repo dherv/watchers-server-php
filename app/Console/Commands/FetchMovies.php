@@ -48,11 +48,12 @@ class FetchMovies extends Command
                     'api_id' => $data['id'],
                     'title' => $data[$title],
                     'description' => $data['overview'],
-                    'rating' => $data['vote_average'],
+                    'rating' => (int)$data['vote_average'],
                     'release_date' => $release_date,
                     'backdrop_path' => $backdrop_path,
                     'poster_path' => $poster_path,
-                ]);
+                ]
+            );
         }
     }
 

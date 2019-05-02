@@ -18,7 +18,7 @@ class CreateSeriesTable extends Migration
             $table->unsignedInteger('api_id');
             $table->string('title');
             $table->longText('description');
-            $table->string('rating');
+            $table->unsignedInteger('rating');
             $table->timestamp('release_date')->nullable();
             $table->string('backdrop_path')->nullable();
             $table->string('poster_path')->nullable();
