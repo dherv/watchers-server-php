@@ -13,7 +13,7 @@ class FetchSerieDetails extends Command
      *
      * @var string
      */
-    protected $signature = 'serie:fetch';
+    protected $signature = 'serie:fetch {--queue}';
 
     /**
      * The console command description.
@@ -50,7 +50,7 @@ class FetchSerieDetails extends Command
             ]);
             $serie = json_decode($serie->getBody(), true);
             $update = Serie::find($id);
-            $update->release_date = $serie['next_episode_to_air']['air_date'];
+            $update->release_date = $serie['next_episode_to_air']['air_date'] ? $serie['next_episode_to_air']['air_date'] : $serie['last_air_date'];
 
             $update->save();
 
