@@ -26,6 +26,7 @@ COPY --from=build /app /app
 
 ### Production Commands
 WORKDIR /app
+COPY ./docker/app/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 RUN cp .env.prod .env
 RUN php artisan key:generate
 RUN php artisan jwt:secret
