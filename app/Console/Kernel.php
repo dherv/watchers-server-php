@@ -24,10 +24,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('movies:fetch movie')->everyMinute()->timezone('America/New_York')->withoutOverlapping();
-        $schedule->command('movies:fetch serie')->everyMinute()->timezone('America/New_York')->withoutOverlapping();
-        $schedule->command('serie:fetch')->everyMinute()->timezone('America/New_York')->withoutOverlapping()->runInBackground();
+        $file = 'cron.log';
 
+        $schedule->command('movies:fetch movie')->hourly()->timezone('America/New_York')->withoutOverlapping()->sendOutputTo($file);
+        $schedule->command('movies:fetch serie')->hourly()->timezone('America/New_York')->withoutOverlapping();
+        $schedule->command('serie:fetch')->hourly()->timezone('America/New_York')->withoutOverlapping()->runInBackground();
     }
 
     /**
