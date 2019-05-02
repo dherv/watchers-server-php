@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   nginx:
-    image: dherv/roadskill-server-nginx
+    image: dherv/watchers-server-nginx
     build:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
@@ -11,7 +11,7 @@ services:
       - app
     # restart: unless_stopped
   app:
-    image: dherv/roadskill-server-app
+    image: dherv/watchers-server-app
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile

@@ -28,7 +28,6 @@ COPY --from=build /app /app
 
 ### Production Commands
 WORKDIR /app
-COPY ./docker/app/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 RUN cp .env.prod .env
 # Copy hello-cron file to the cron.d directory
 COPY ./cron/fetch-cron /etc/cron.d/fetch-cron
