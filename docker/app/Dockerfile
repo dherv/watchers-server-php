@@ -28,7 +28,6 @@ COPY --from=build /app /app
 
 ### Production Commands
 WORKDIR /app
-RUN cp .env.prod .env
 # Copy hello-cron file to the cron.d directory
 COPY ./cron/fetch-cron /etc/cron.d/fetch-cron
 # Give execution rights on the cron job
@@ -41,7 +40,8 @@ RUN touch /var/log/cron.log
 RUN sed -i '/session    required     pam_loginuid.so/c\#session    required   pam_loginuid.so' /etc/pam.d/cron
 # # Run the command on container startup
 # CMD cron && tail -f /var/log/cron.log
+RUN cp .env.prod .env
+RUN php artisan optimize
 RUN php artisan key:generate
 RUN php artisan jwt:secret
 RUN chmod -R 777 storage/* bootstrap/cache
-# RUN php artisan optimize
