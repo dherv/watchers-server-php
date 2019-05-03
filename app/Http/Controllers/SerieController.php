@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Serie;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SerieController extends Controller
 {
@@ -19,10 +20,11 @@ class SerieController extends Controller
         $order = request()->query('order');
         $fromDate = new Carbon('last month');
         $toDate = new Carbon('next month');
-        $data =
-            Serie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()])
-            ->orderBy($sort, $order)
-            ->paginate(23);
+        $data  =  Cache::remember('skills', 1, function () use ($fromDate, $toDate, $sort, $order) {
+            return Serie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()])
+                ->orderBy($sort, $order)
+                ->paginate(23);
+        });
         return response()->json(compact('data'));
     }
 
