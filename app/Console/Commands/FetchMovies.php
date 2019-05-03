@@ -42,7 +42,7 @@ class FetchMovies extends Command
             $title = $type === 'movie' ? 'title' : 'name';
             $release_date = \array_key_exists('release_date', $data) ? $data['release_date'] : null;
             $model = $type === 'movie' ? (Movie::class) : (Serie::class);
-            $model::firstOrCreate(
+            $model::updateOrCreate(
                 ['api_id' => $data['id']],
                 [
                     'api_id' => $data['id'],
@@ -68,7 +68,8 @@ class FetchMovies extends Command
         $page = 1;
         $type = $this->argument('type');
         $url = $type === 'movie' ? config('cron.url') : config('cron.series');
-        while ($page < 5) {
+        var_dump($url, config('cron.url'));
+        while ($page < 10) {
             $response = $client->request('GET', $url . $page);
             $results = json_decode($response->getBody(), true)['results'];
             $this->fetchData($results);
