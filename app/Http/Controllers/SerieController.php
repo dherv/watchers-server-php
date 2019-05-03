@@ -20,7 +20,7 @@ class SerieController extends Controller
         $order = request()->query('order');
         $fromDate = new Carbon('last month');
         $toDate = new Carbon('next month');
-        $data  =  Cache::remember('skills', 1, function () use ($fromDate, $toDate, $sort, $order) {
+        $data  =  Cache::remember('skills' . $sort . $order, 10, function () use ($fromDate, $toDate, $sort, $order) {
             return Serie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()])
                 ->orderBy($sort, $order)
                 ->paginate(23);
