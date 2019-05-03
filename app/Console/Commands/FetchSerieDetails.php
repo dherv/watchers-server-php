@@ -44,7 +44,7 @@ class FetchSerieDetails extends Command
 
         foreach ($series as $serie) {
             $id = $serie->id;
-            $key = env('TMDB_KEY');
+            $key = config('cron.key');
             $serie = $client->request('GET', "https://api.themoviedb.org/3/tv/{$serie->api_id}?api_key={$key}&language=en-US", [
                 'delay' => 250,
             ]);
@@ -53,8 +53,6 @@ class FetchSerieDetails extends Command
             $update->release_date = $serie['next_episode_to_air']['air_date'] ? $serie['next_episode_to_air']['air_date'] : $serie['last_air_date'];
 
             $update->save();
-
         }
-
     }
 }

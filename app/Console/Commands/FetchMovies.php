@@ -67,13 +67,12 @@ class FetchMovies extends Command
         $client = new Client();
         $page = 1;
         $type = $this->argument('type');
-        $url = $type === 'movie' ? env('TMDB_URL') : env('TMDB_SERIES');
+        $url = $type === 'movie' ? config('cron.url') : config('cron.series');
         while ($page < 5) {
             $response = $client->request('GET', $url . $page);
             $results = json_decode($response->getBody(), true)['results'];
             $this->fetchData($results);
             $page += 1;
         }
-
     }
 }
