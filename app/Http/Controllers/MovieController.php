@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Movie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class MovieController extends Controller
 {
@@ -17,13 +18,13 @@ class MovieController extends Controller
     {
         $sort = request()->query('sort');
         $order = request()->query('order');
-        // map 
         $fromDate = new Carbon('last month');
         $toDate = new Carbon('next month');
-        $data =
-            Movie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()])
-            ->orderBy($sort, $order)
-            ->paginate(23);
+        $data  =  Cache::remember('movies' . $sort . $order, 10, function () use ($fromDate, $toDate, $sort, $order) {
+            return Movie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()])
+                ->orderBy($sort, $order)
+                ->paginate(23);
+        });
 
         return response()->json(compact('data'));
     }
