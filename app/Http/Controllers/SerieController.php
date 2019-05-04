@@ -18,14 +18,35 @@ class SerieController extends Controller
     {
         $sort = request()->query('sort');
         $order = request()->query('order');
+        $page = (int)request()->query('page');
+
+        $per_page = 23;
         $fromDate = new Carbon('last month');
         $toDate = new Carbon('next month');
-        $data  =  Cache::remember('skills' . $sort . $order, 10, function () use ($fromDate, $toDate, $sort, $order) {
-            return Serie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()])
-                ->orderBy($sort, $order)
-                ->paginate(23);
-        });
-        return response()->json(compact('data'));
+
+        // Laravel does not play nicely with orderBy() and paginate() along Cache. 
+        // Each page will be cached and sorting will happen inside each page instead of the whole set.
+        // the number per page is fixed. so use offset and limit to do the pagination
+        $query = Serie::whereBetween('release_date', [$fromDate->toDateTimeString(), $toDate->toDateTimeString()]);
+
+        $data = Cache::remember(
+            'series' . $sort . $order . $page,
+            1,
+            function () use ($fromDate, $toDate, $sort, $order, $page, $query, $per_page) {
+                $count = $query->count();
+                $data = $query->orderBy($sort, $order)
+                    ->skip(($page - 1) * $per_page)
+                    ->take($per_page)
+                    ->get();
+
+                $current_page = $page;
+                $previous_page = $page - 1;
+                $next_page = $page + 1;
+                return compact('data', 'count', 'current_page', 'previous_page', 'next_page');
+            }
+        );
+
+        return response()->json($data);
     }
 
     /**
